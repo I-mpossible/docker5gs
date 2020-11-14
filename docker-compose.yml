@@ -17,7 +17,7 @@ networks:
 services:
 
   nrf:
-    image: open5gs-net:latest
+    image: open5gs/ubuntu-bionic-open5gs-build:latest
     # depends_on:
     #   - amf
     container_name: nrf
@@ -84,7 +84,7 @@ services:
   #       ipv4_address: 192.168.23.19
 
   # udr:
-  #   image: open5gs-net:latest
+  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
   #   depends_on:
   #     - mongodb
   #   container_name: udr
@@ -106,7 +106,7 @@ services:
   #       ipv4_address: 192.168.23.13
 
   # udm:
-  #   image: open5gs-net:latest
+  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
   #   depends_on:
   #     - udr
   #   container_name: udm
@@ -128,7 +128,7 @@ services:
   #       ipv4_address: 192.168.23.12
 
   # ausf:
-  #   image: open5gs-net:latest
+  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
   #   depends_on:
   #     - smf
   #   container_name: ausf
@@ -150,7 +150,7 @@ services:
   #       ipv4_address: 192.168.23.11
 
   # amf:
-  #   image: open5gs-net:latest
+  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
   #   depends_on:
   #     - mongodb
   #   container_name: amf
@@ -172,7 +172,7 @@ services:
   #       ipv4_address: 192.168.23.5
 
   # smf:
-  #   image: open5gs-net:latest
+  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
   #   depends_on:
   #     - amf
   #   container_name: smf
@@ -195,7 +195,7 @@ services:
 
 
   # hss:
-  #   image: open5gs-net:latest
+  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
   #   depends_on:
   #     - mongodb
   #   container_name: hss
@@ -211,7 +211,7 @@ services:
   #       ipv4_address: 192.168.23.10
 
   # mme:
-  #    image: open5gs-net:latest
+  #    image: open5gs/ubuntu-bionic-open5gs-build:latest
   #    depends_on:
   #      - hss
   #    container_name: mme
@@ -233,7 +233,7 @@ services:
   #        ipv4_address: 192.168.23.20
 
   # sgw:
-  #    image: open5gs-net:latest
+  #    image: open5gs/ubuntu-bionic-open5gs-build:latest
   #    container_name: sgw
   #    hostname: sgw
   #    entrypoint:
@@ -276,7 +276,7 @@ services:
   #        ipv4_address: 192.168.23.40
 
   # pcrf:
-  #   image: open5gs-net:latest
+  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
   #   depends_on:
   #      - mongodb
   #      - hss
