@@ -173,10 +173,8 @@ smf:
         port: 7777
     gtpc:
       - addr: 192.168.23.4
-      - addr: ::1
     pfcp:
       - addr: 192.168.23.4
-      - addr: ::1
     pdn:
       - addr: 10.45.0.1/16
       - addr: cafe::1/64
@@ -186,7 +184,7 @@ smf:
       - 2001:4860:4860::8888
       - 2001:4860:4860::8844
     mtu: 1400
-    freeDiameter: /home/open5gs/install/etc/freeDiameter/smf.conf
+    freeDiameter: /etc/open5gs/freeDiameter/smf.conf
 
 #
 # nrf:
@@ -218,7 +216,6 @@ nrf:
     sbi:
       - addr:
           - 192.168.23.10
-          - ::1
         port: 7777
 
 #

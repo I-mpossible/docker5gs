@@ -17,7 +17,7 @@ networks:
 services:
 
   nrf:
-    image: open5gs/ubuntu-bionic-open5gs-build:latest
+    image: open5gs-net:latest
     # depends_on:
     #   - amf
     container_name: nrf
@@ -38,164 +38,189 @@ services:
       core_network:
         ipv4_address: 192.168.23.10
 
-  # mongodb:
-  #   image: mongo:latest
-  #   container_name: "mongodb"
-  #   volumes:
-  #     - mongodb_data:/data/db
-  #   hostname: mongodb
-  #   networks:
-  #     core_network:
-  #       ipv4_address: 192.168.23.50
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    volumes:
+      - mongodb_data:/data/db
+    hostname: mongodb
+    networks:
+      core_network:
+        ipv4_address: 192.168.23.50
 
-  # webui:
-  #   image: open5gs/open5gs-webui:latest
-  #   depends_on:
-  #     - mongodb
-  #   environment:
-  #     - DB_URI=mongodb://mongodb/open5gs
-  #   container_name: webui
-  #   hostname: webui
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #       - "./:/etc/open5gs"
-  #   entrypoint:
-  #     - "/bin/sh"
-  #     - "/etc/open5gs/run_webui.sh"
-  #   networks:
-  #     core_network:
-  #       ipv4_address: 192.168.23.6
+  webui:
+    image: open5gs/open5gs-webui:latest
+    depends_on:
+      - mongodb
+    environment:
+      - DB_URI=mongodb://mongodb/open5gs
+    container_name: webui
+    hostname: webui
+    ports:
+      - "3000:3000"
+    volumes:
+        - "./:/etc/open5gs"
+    entrypoint:
+      - "/bin/sh"
+      - "/etc/open5gs/run_webui.sh"
+    networks:
+      core_network:
+        ipv4_address: 192.168.23.6
 
-  # mongodbloader:
-  #   image: mongo:latest
-  #   depends_on:
-  #     - webui
-  #   environment:
-  #     - DB_HOST=mongodb
-  #   volumes:
-  #     - "./provisioning/db/run_db.sh:/tmp/run.sh"
-  #     - "./provisioning/db/imsi1.json:/tmp/imsi1.json"
-  #   entrypoint:
-  #     - /bin/sh
-  #     - /tmp/run.sh
-  #   networks:
-  #     core_network:
-  #       ipv4_address: 192.168.23.19
+  mongodbloader:
+    image: mongo:latest
+    depends_on:
+      - webui
+    environment:
+      - DB_HOST=mongodb
+    volumes:
+      - "./provisioning/db/run_db.sh:/tmp/run.sh"
+      - "./provisioning/db/imsi1.json:/tmp/imsi1.json"
+    entrypoint:
+      - /bin/sh
+      - /tmp/run.sh
+    networks:
+      core_network:
+        ipv4_address: 192.168.23.19
 
-  # udr:
-  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
-  #   depends_on:
-  #     - mongodb
-  #   container_name: udr
-  #   hostname: udr
-  #   # ports:
-  #   #   - "7777:7777"
-  #   #   - "7777:7777/udp"
-  #   # expose:
-  #   #   - "7777"
-  #   #   - "7777/udp"
-  #   entrypoint:
-  #     - "/bin/sh"
-  #     - "/etc/open5gs/run_udr.sh"
-  #   volumes:
-  #     - "./:/etc/open5gs"
-  #     - "./log:/home/open5gs/install/var/log/open5gs"
-  #   networks:
-  #     core_network:
-  #       ipv4_address: 192.168.23.13
+  udr:
+    image: open5gs-net:latest
+    depends_on:
+      - mongodb
+    container_name: udr
+    hostname: udr
+    # ports:
+    #   - "7777:7777"
+    #   - "7777:7777/udp"
+    # expose:
+    #   - "7777"
+    #   - "7777/udp"
+    entrypoint:
+      - "/bin/sh"
+      - "/etc/open5gs/run_udr.sh"
+    volumes:
+      - "./:/etc/open5gs"
+      - "./log:/home/open5gs/install/var/log/open5gs"
+    networks:
+      core_network:
+        ipv4_address: 192.168.23.13
 
-  # udm:
-  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
-  #   depends_on:
-  #     - udr
-  #   container_name: udm
-  #   hostname: udm
-  #   # ports:
-  #   #   - "7777:7777"
-  #   #   - "7777:7777/udp"
-  #   # expose:
-  #   #   - "7777"
-  #   #   - "7777/udp"
-  #   entrypoint:
-  #     - "/bin/sh"
-  #     - "/etc/open5gs/run_udm.sh"
-  #   volumes:
-  #     - "./:/etc/open5gs"
-  #     - "./log:/home/open5gs/install/var/log/open5gs"
-  #   networks:
-  #     core_network:
-  #       ipv4_address: 192.168.23.12
+  udm:
+    image: open5gs-net:latest
+    depends_on:
+      - udr
+    container_name: udm
+    hostname: udm
+    # ports:
+    #   - "7777:7777"
+    #   - "7777:7777/udp"
+    # expose:
+    #   - "7777"
+    #   - "7777/udp"
+    entrypoint:
+      - "/bin/sh"
+      - "/etc/open5gs/run_udm.sh"
+    volumes:
+      - "./:/etc/open5gs"
+      - "./log:/home/open5gs/install/var/log/open5gs"
+    networks:
+      core_network:
+        ipv4_address: 192.168.23.12
 
-  # ausf:
-  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
-  #   depends_on:
-  #     - smf
-  #   container_name: ausf
-  #   hostname: ausf
-  #   # ports:
-  #   #   - "7777:7777"
-  #   #   - "7777:7777/udp"
-  #   # expose:
-  #   #   - "7777"
-  #   #   - "7777/udp"
-  #   entrypoint:
-  #     - "/bin/sh"
-  #     - "/etc/open5gs/run_ausf.sh"
-  #   volumes:
-  #     - "./:/etc/open5gs"
-  #     - "./log:/home/open5gs/install/var/log/open5gs"
-  #   networks:
-  #     core_network:
-  #       ipv4_address: 192.168.23.11
+  ausf:
+    image: open5gs-net:latest
+    depends_on:
+      - smf
+    container_name: ausf
+    hostname: ausf
+    # ports:
+    #   - "7777:7777"
+    #   - "7777:7777/udp"
+    # expose:
+    #   - "7777"
+    #   - "7777/udp"
+    entrypoint:
+      - "/bin/sh"
+      - "/etc/open5gs/run_ausf.sh"
+    volumes:
+      - "./:/etc/open5gs"
+      - "./log:/home/open5gs/install/var/log/open5gs"
+    networks:
+      core_network:
+        ipv4_address: 192.168.23.11
 
-  # amf:
-  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
-  #   depends_on:
-  #     - mongodb
-  #   container_name: amf
-  #   hostname: amf
-  #   # ports:
-  #   #   - "7777:7777"
-  #   #   - "7777:7777/udp"
-  #   # expose:
-  #   #   - "7777"
-  #   #   - "7777/udp"
-  #   entrypoint:
-  #     - "/bin/sh"
-  #     - "/etc/open5gs/run_amf.sh"
-  #   volumes:
-  #     - "./:/etc/open5gs"
-  #     - "./log:/home/open5gs/install/var/log/open5gs"
-  #   networks:
-  #     core_network:
-  #       ipv4_address: 192.168.23.5
+  amf:
+    image: open5gs-net:latest
+    depends_on:
+      - mongodb
+    container_name: amf
+    hostname: amf
+    # ports:
+    #   - "7777:7777"
+    #   - "7777:7777/udp"
+    # expose:
+    #   - "7777"
+    #   - "7777/udp"
+    entrypoint:
+      - "/bin/sh"
+      - "/etc/open5gs/run_amf.sh"
+    volumes:
+      - "./:/etc/open5gs"
+      - "./log:/home/open5gs/install/var/log/open5gs"
+    networks:
+      core_network:
+        ipv4_address: 192.168.23.5
 
-  # smf:
-  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
-  #   depends_on:
-  #     - amf
-  #   container_name: smf
-  #   hostname: smf
-  #   # ports:
-  #   #   - "7777:7777"
-  #   #   - "7777:7777/udp"
-  #   # expose:
-  #   #   - "7777"
-  #   #   - "7777/udp"
-  #   entrypoint:
-  #     - "/bin/sh"
-  #     - "/etc/open5gs/run_smf.sh"
-  #   volumes:
-  #     - "./:/etc/open5gs"
-  #     - "./log:/home/open5gs/install/var/log/open5gs"
-  #   networks:
-  #     core_network:
-  #       ipv4_address: 192.168.23.4
+  upf:
+    image: open5gs-net:latest
+    depends_on:
+      - amf
+    container_name: upf
+    hostname: upf
+    # ports:
+    #   - "7777:7777"
+    #   - "7777:7777/udp"
+    # expose:
+    #   - "7777"
+    #   - "7777/udp"
+    entrypoint:
+      - "/bin/sh"
+      - "/etc/open5gs/run_upf.sh"
+    volumes:
+      - "./:/etc/open5gs"
+      - "./log:/home/open5gs/install/var/log/open5gs"
+      - "./lib:/home/open5gs/install/lib/"
+    networks:
+      core_network:
+        ipv4_address: 192.168.23.7
+
+  smf:
+    image: open5gs-net:latest
+    depends_on:
+      - amf
+      - upf
+    container_name: smf
+    hostname: smf
+    # ports:
+    #   - "7777:7777"
+    #   - "7777:7777/udp"
+    # expose:
+    #   - "7777"
+    #   - "7777/udp"
+    entrypoint:
+      - "/bin/sh"
+      - "/etc/open5gs/run_smf.sh"
+    volumes:
+      - "./:/etc/open5gs"
+      - "./log:/home/open5gs/install/var/log/open5gs"
+      - "./lib:/home/open5gs/install/lib/"
+    networks:
+      core_network:
+        ipv4_address: 192.168.23.4
 
 
   # hss:
-  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
+  #   image: open5gs-net:latest
   #   depends_on:
   #     - mongodb
   #   container_name: hss
@@ -211,7 +236,7 @@ services:
   #       ipv4_address: 192.168.23.10
 
   # mme:
-  #    image: open5gs/ubuntu-bionic-open5gs-build:latest
+  #    image: open5gs-net:latest
   #    depends_on:
   #      - hss
   #    container_name: mme
@@ -233,7 +258,7 @@ services:
   #        ipv4_address: 192.168.23.20
 
   # sgw:
-  #    image: open5gs/ubuntu-bionic-open5gs-build:latest
+  #    image: open5gs-net:latest
   #    container_name: sgw
   #    hostname: sgw
   #    entrypoint:
@@ -276,7 +301,7 @@ services:
   #        ipv4_address: 192.168.23.40
 
   # pcrf:
-  #   image: open5gs/ubuntu-bionic-open5gs-build:latest
+  #   image: open5gs-net:latest
   #   depends_on:
   #      - mongodb
   #      - hss
